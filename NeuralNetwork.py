@@ -22,6 +22,35 @@ def relu(Z):
     return A, cache
 
 
+def relu_backward(dA, cache):
+    """
+    :param dA -- 后激活值
+    :param cache -- 存储Z，用于高效地计算反向传播
+    :return:
+    dZ -- 代价函数J对Z的偏导
+    """
+    Z = cache
+    dZ = np.array(dA, copy=True)
+    # z<=0 时，dZ = 0
+    # z>0 时，dZ = dA
+    dZ[Z <= 0] = 0
+    return dZ
+
+
+def sigmoid_backward(dA, cache):
+    """
+    :param dA -- 后激活值
+    :param cache -- 存储Z，用于高效地计算反向传播
+    :return:
+    dZ -- 代价函数J对Z的偏导
+    """
+
+    Z = cache
+    s = sigmoid(Z)
+    dZ = dA * s * (1 - s)
+    return dZ
+
+
 # 初始化参数：权重矩阵和偏置向量
 def initialize_parameters_deep(layer_dims):
     """
@@ -33,7 +62,7 @@ def initialize_parameters_deep(layer_dims):
     """
 
     parameters = {}  # 字典
-    L = len(layer_dims)  # 网络中的神经元层数
+    L = len(layer_dims)  # 网络层数
     for l in range(1, L):
         parameters['W' + str(l)] = np.random.randn(layer_dims[l], layer_dims[l - 1]) * 0.01
         parameters['b' + str(l)] = np.zeros((layer_dims[l], 1))
@@ -118,6 +147,27 @@ def compute_cost(AL, Y):
     return cost
 
 
+# 为一层实现线性部分的反向传播
+def linear_backward(dZ, cache):
+    """
+    :param dZ -- 代价函数J对Z的偏导
+    :param cache -- 来自前向传播的元组(A_prev, W, b)
+    :return:
+    dA_prev -- 代价函数J对A_prev的偏导，大小与A_prev相同
+    dW -- 代价函数J对W的偏导，大小与W相同
+    db -- 代价函数J对b的偏导，大小与b相同
+    """
+
+    A_prev, W, b = cache
+    m = A_prev.shape[1]  # 样本个数
+
+    dW = 1 / m * np.dot(dZ, A_prev.T)
+    db = 1 / m * np.sum(dZ, axis=1, keepdims=True)
+    dA_prev = np.dot(W.T, dZ)
+
+    return dA_prev, dW, db
+
+
 # 实现从线性到激活的反向传播
 def linear_activation_backward(dA, cache, activation):
     """
@@ -125,7 +175,72 @@ def linear_activation_backward(dA, cache, activation):
     :param cache -- 元组(linear_cache, activation_cache)，用于高效地计算反向传播
     :param activation -- 本层使用的激活函数，以文本字符串 "sigmoid" 或 "relu" 的形式存储
     :return:
-    dA_prev -- 代价函数J对A_prev求偏导，大小与A_prev相同
-    dW -- 代价函数J对W求偏导，
-    db --
+    dA_prev -- 代价函数J对A_prev的偏导，大小与A_prev相同
+    dW -- 代价函数J对W的偏导，大小与W相同
+    db -- 代价函数J对b的偏导，大小与b相同
     """
+    linear_cache, activation_cache = cache
+
+    if activation == "relu":
+        dZ = relu_backward(dA, activation_cache)
+        dA_prev, dW, db = linear_backward(dZ, linear_cache)
+
+    elif activation == "sigmoid":
+        dZ = sigmoid_backward(dA, activation_cache)
+        dA_prev, dW, db = linear_backward(dZ, linear_cache)
+
+    return dA_prev, dW, db
+
+
+def L_model_backward(AL, Y, caches):
+    """
+    :param AL -- 概率向量，前向传播的输出
+    :param Y -- 标签向量
+    :param caches -- 列表，包含每个 linear_relu_forward 的 cache，共有 L-1 个，索引从 0 到 L-2
+                             一个 linear_sigmoid_forward 的cache，索引是 L-1
+    :return:
+    grads -- 存储各项梯度的字典
+             grads["dA" + str(l)] = ...
+             grads["dW" + str(l)] = ...
+             grads["db" + str(l)] = ...
+    """
+
+    grads = {}
+    L = len(caches)  # 网络层数
+    m = AL.shape[1]  # 样本个数
+    Y = Y.reshape(AL.shape)  # Y 与 AL 维度一致
+
+    # 初始化反向传播
+    dAL = -(np.divide(Y, AL) - np.divide(1 - Y, 1 - AL))
+
+    # 第L层的反向传播：sigmoid 到线性的梯度
+    current_cache = caches[L - 1]
+    grads["dA" + str(L)], grads["dW" + str(L)], grads["db" + str(L)] = linear_activation_backward(dAL,
+                                                                                                  current_cache,
+                                                                                                  "sigmoid")
+    for l in reversed(range(L - 1)):  # l从L-2 到1
+        # relu 到线性的梯度
+        current_cache = caches[l]
+        dA_prev_l, dW_l, db_l = linear_activation_backward(grads["dA" + str(l + 2)], current_cache, "relu")
+        grads["dA" + str(l + 1)] = dA_prev_l
+        grads["dW" + str(l + 1)] = dW_l
+        grads["db" + str(l + 1)] = db_l
+    return grads
+
+
+# 实现前向传播与反向传播后，能计算出迭代需要的梯度，下面对参数进行迭代
+def update_parameters(parameters, grads, learning_rate):
+    """
+    :param parameters -- Python 字典
+    :param grads -- Python 字典
+    :param learning_rate -- 学习率
+    :return:
+    parameters -- Python 字典，包含更新后的参数
+    """
+
+    L = len(parameters) // 2  # 网络层数
+
+    for l in range(L):  # l从1 到L-1
+        parameters["W" + str(l + 1)] = parameters["W" + str(l + 1)] - learning_rate * grads["dW" + str(l + 1)]
+        parameters["b" + str(l + 1)] = parameters["b" + str(l + 1)] - learning_rate * grads["db" + str(l + 1)]
+    return parameters

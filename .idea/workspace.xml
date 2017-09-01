@@ -14,8 +14,8 @@
       <file leaf-file-name="NeuralNetwork.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/NeuralNetwork.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="453">
-              <caret line="128" column="21" lean-forward="true" selection-start-line="128" selection-start-column="21" selection-end-line="128" selection-end-column="21" />
+            <state relative-caret-position="916">
+              <caret line="246" column="0" lean-forward="true" selection-start-line="246" selection-start-column="0" selection-end-line="246" selection-end-column="0" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -29,6 +29,8 @@
     <findStrings>
       <find>initial</find>
       <find>后</find>
+      <find>层</find>
+      <find>caches</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -47,10 +49,11 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="-7" />
-    <option name="width" value="1378" />
-    <option name="height" value="735" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="140" />
+    <option name="y" value="-8" />
+    <option name="width" value="1370" />
+    <option name="height" value="714" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -115,7 +118,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="1378" height="735" extended-state="0" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5007342" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -180,6 +183,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/NeuralNetwork.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/numpy/random/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -190,8 +203,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/NeuralNetwork.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="453">
-          <caret line="128" column="21" lean-forward="true" selection-start-line="128" selection-start-column="21" selection-end-line="128" selection-end-column="21" />
+        <state relative-caret-position="916">
+          <caret line="246" column="0" lean-forward="true" selection-start-line="246" selection-start-column="0" selection-end-line="246" selection-end-column="0" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
