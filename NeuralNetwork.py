@@ -1,11 +1,4 @@
-import matplotlib as matplotlib
 import numpy as np  # Python中科学计算的主要工具
-import h5py
-import matplotlib.pyplot as plt  # Python作图工具
-
-plt.rcParams['figure.figsize'] = (5.0, 4.0)  # 设定图片的默认大小
-plt.rcParams['image.interpolation'] = 'nearest'
-plt.rcParams['image.cmap'] = 'gray'
 
 np.random.seed(1)  # 随机数种子
 
@@ -218,7 +211,7 @@ def L_model_backward(AL, Y, caches):
     grads["dA" + str(L)], grads["dW" + str(L)], grads["db" + str(L)] = linear_activation_backward(dAL,
                                                                                                   current_cache,
                                                                                                   "sigmoid")
-    for l in reversed(range(L - 1)):  # l从L-2 到1
+    for l in reversed(range(L - 1)):  # l从L-2 到0
         # relu 到线性的梯度
         current_cache = caches[l]
         dA_prev_l, dW_l, db_l = linear_activation_backward(grads["dA" + str(l + 2)], current_cache, "relu")
@@ -240,7 +233,7 @@ def update_parameters(parameters, grads, learning_rate):
 
     L = len(parameters) // 2  # 网络层数
 
-    for l in range(L):  # l从1 到L-1
+    for l in range(L):  # l从0 到L-1
         parameters["W" + str(l + 1)] = parameters["W" + str(l + 1)] - learning_rate * grads["dW" + str(l + 1)]
         parameters["b" + str(l + 1)] = parameters["b" + str(l + 1)] - learning_rate * grads["db" + str(l + 1)]
     return parameters
