@@ -118,5 +118,14 @@ def compute_cost(AL, Y):
     return cost
 
 
-def linear_backward(dZ, cache):
-    
+# 实现从线性到激活的反向传播
+def linear_activation_backward(dA, cache, activation):
+    """
+    :param dA -- 当前层的后激活值的梯度
+    :param cache -- 元组(linear_cache, activation_cache)，用于高效地计算反向传播
+    :param activation -- 本层使用的激活函数，以文本字符串 "sigmoid" 或 "relu" 的形式存储
+    :return:
+    dA_prev -- 代价函数J对A_prev求偏导，大小与A_prev相同
+    dW -- 代价函数J对W求偏导，
+    db --
+    """
